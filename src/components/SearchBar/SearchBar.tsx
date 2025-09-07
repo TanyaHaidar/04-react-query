@@ -1,41 +1,51 @@
-import { useState } from "react";
-import { toast } from "react-hot-toast";
+import { FC } from "react";
+import toast from "react-hot-toast";
 import styles from "./SearchBar.module.css";
 
 interface SearchBarProps {
   onSubmit: (query: string) => void;
 }
 
-export default function SearchBar({ onSubmit }: SearchBarProps) {
-  const [query, setQuery] = useState("");
+const SearchBar: FC<SearchBarProps> = ({ onSubmit }) => {
+  async function handleAction(formData: FormData) {
+    const query = formData.get("query")?.toString().trim();
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const trimmed = query.trim();
-    if (!trimmed) {
+    if (!query) {
       toast.error("Please enter your search query.");
       return;
     }
-    onSubmit(trimmed);
+
+    onSubmit(query);
   }
 
   return (
     <header className={styles.header}>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <input
-          type="text"
-          name="query"
-          autoFocus
-          autoComplete="off"
-          placeholder="Search movies..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className={styles.input}
-        />
-        <button type="submit" className={styles.button}>
-          Search
-        </button>
-      </form>
+      <div className={styles.container}>
+        <a
+          className={styles.link}
+          href="https://www.themoviedb.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Powered by TMDB
+        </a>
+
+        <form action={handleAction} className={styles.form}>
+          <input
+            className={styles.input}
+            type="text"
+            name="query"
+            autoComplete="off"
+            placeholder="Search movies..."
+            autoFocus
+          />
+          <button className={styles.button} type="submit">
+            Search
+          </button>
+        </form>
+      </div>
     </header>
   );
-}
+};
+
+export default SearchBar;
