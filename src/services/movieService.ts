@@ -4,25 +4,32 @@ import { Movie } from "../types/movie";
 const BASE_URL = "https://api.themoviedb.org/3/search/movie";
 const token = import.meta.env.VITE_TMDB_TOKEN;
 
-interface TMDBResponse {
+export interface SearchMoviesResponse {
+  page: number;
   results: Movie[];
+  total_results: number;
+  total_pages: number;
 }
 
-export async function fetchMovies(query: string): Promise<Movie[]> {
+export async function fetchMovies(
+  query: string,
+  page: number
+): Promise<SearchMoviesResponse> {
   const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params: {
-      query,
-      language: "en-US",
-    },
+    params: { query, include_adult: false, language: "en-US", page },
+    headers: { Authorization: `Bearer ${TOKEN}` },
   };
 
-  const response = await axios.get<TMDBResponse>(BASE_URL, config);
-  return response.data.results;
+  const res: AxiosResponse<SearchMoviesResponse> = await axios.get(
+    BASE_URL,
+    config
+  );
+  return res.data;
 }
 
-export function getImageUrl(path: string, size: string = "w500"): string {
+export function getImageUrl(
+  path: string,
+  size: "w500" | "original" = "w500"
+): string {
   return `https://image.tmdb.org/t/p/${size}${path}`;
 }
