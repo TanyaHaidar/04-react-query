@@ -17,13 +17,10 @@ export async function fetchMovies(
 ): Promise<SearchMoviesResponse> {
   const config = {
     params: { query, include_adult: false, language: "en-US", page },
-    headers: { Authorization: `Bearer ${TOKEN}` },
+    headers: { Authorization: `Bearer ${token}` },
   };
 
-  const res: AxiosResponse<SearchMoviesResponse> = await axios.get(
-    BASE_URL,
-    config
-  );
+  const res = await axios.get<SearchMoviesResponse>(BASE_URL, config);
   return res.data;
 }
 

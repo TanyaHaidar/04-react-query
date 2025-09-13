@@ -20,8 +20,14 @@ const App = () => {
     queryKey: ["movies", query, page],
     queryFn: () => fetchMovies(query, page),
     enabled: query.length > 0,
-    keepPreviousData: true,
+    placeholderData: (prev) => prev,
   });
+
+  useEffect(() => {
+    if (data && data.results.length === 0) {
+      toast("No movies found for your request.");
+    }
+  }, [data]);
 
   const handleSearch = (newQuery: string) => {
     setQuery(newQuery);
@@ -55,8 +61,6 @@ const App = () => {
           )}
         </>
       )}
-
-      {data && data.results.length === 0 && toast("No movies found.")}
 
       {selectedMovie && (
         <MovieModal
