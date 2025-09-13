@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import toast, { Toaster } from "react-hot-toast";
 import SearchBar from "../SearchBar/SearchBar";
@@ -42,7 +42,7 @@ const App = () => {
       {isFetching && <Loader />}
       {isError && <ErrorMessage />}
 
-      {data && data.results.length > 0 && (
+      {data?.results?.length > 0 && (
         <>
           <MovieGrid movies={data.results} onSelect={setSelectedMovie} />
 
